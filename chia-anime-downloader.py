@@ -45,17 +45,27 @@ print("\n\nEnter the starting and ending episodes\n")
 while(1):
 	start = int(input("\nEnter starting episode: "))
 	end = int(input("\nEnter ending episode: "))
-	if(start>0 and start < len(anime_episode_links) and end>1 and end<=len(anime_episode_links) and start<=end):
+	if(start>0 and start < len(anime_episode_links) and end>=1 and end<=len(anime_episode_links) and start<=end):
 		break
-#print(anime_episode_links[start-1:end])
-	
 
-animepremium_links = [] 
+#print(anime_episode_links[start-1:end])
+
+while(1):
+	quality = input("Enter the quality from 360p, 480p, 720p, 1080p")
+	if(quality == ('360p' or '480p' or '720p' or '1080p')):
+		break
+	else: print("Invalid Quality")
+
+
+# Grab animepremium links
+episode_download = [] 
 for episode_page in anime_episode_links[start-1:end]:
 	episode_page_soup = BeautifulSoup(requests.get(episode_page).text,"lxml")
-	for x in episode_page_soup.find_all('a'):
-		if x.has_attr('id'):
-			if(x['id'] == "download"):
-				animepremium_links.append(x['href'])
+	for x in episode_page_soup.find_all(id="download"):
+		print(x['href'])
+		animepremium_page_soup = BeautifulSoup((requests.get(x['href'])).text,"lxml")
+		for y in animepremium_page_soup.find_all(rel="nofollow"):
+			if(y.text==quality):
+				print(y['href'])
 
 
