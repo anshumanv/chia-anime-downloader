@@ -18,4 +18,5 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 ### Issues/Problems :
 1. Not able to grab links from pages which don't have resolution selector or contains japanese characters.
 
-PR as well appreciated.
+
+PR's are well appreciated.
