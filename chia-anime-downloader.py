@@ -52,7 +52,7 @@ while(1):
 
 while(1):
 	quality = input("Enter the quality from 360p, 480p, 720p, 1080p")
-	if(quality == ('360p' or '480p' or '720p' or '1080p')):
+	if(quality in {'360p', '480p', '720p', '1080p'}):
 		break
 	else: print("Invalid Quality")
 
@@ -66,6 +66,6 @@ for episode_page in anime_episode_links[start-1:end]:
 		animepremium_page_soup = BeautifulSoup((requests.get(x['href'])).text,"lxml")
 		for y in animepremium_page_soup.find_all(rel="nofollow"):
 			if(y.text==quality):
-				print(y['href'])
-
+				episode_download.append(y['href'])
+print(episode_download)
 
