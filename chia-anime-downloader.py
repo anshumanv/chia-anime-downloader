@@ -33,13 +33,15 @@ else:
 
 
 print(anime_page_link)
+anime_name = anime_page_link.split('/')[-2]
 anime_episode_links = []	# list to store episode links scraped from anime page
 animepagesoup = BeautifulSoup((requests.get(anime_page_link)).text,"lxml")
 for x in animepagesoup.find_all('h3'):
 	anime_episode_links.append(x.a['href'])
 
 anime_episode_links.reverse()	# Reverse the links array since chia-anime stores links in reverse order
-print(anime_episode_links)
+
+#print(anime_episode_links)
 
 print("\n\nEnter the starting and ending episodes\n")
 while(1):
@@ -51,7 +53,7 @@ while(1):
 #print(anime_episode_links[start-1:end])
 
 while(1):
-	quality = input("Enter the quality from 360p, 480p, 720p, 1080p")
+	quality = input("\n\nEnter the quality from 360p, 480p, 720p, 1080p : ")
 	if(quality in {'360p', '480p', '720p', '1080p'}):
 		break
 	else: print("Invalid Quality")
@@ -62,10 +64,23 @@ episode_download = []
 for episode_page in anime_episode_links[start-1:end]:
 	episode_page_soup = BeautifulSoup(requests.get(episode_page).text,"lxml")
 	for x in episode_page_soup.find_all(id="download"):
-		print(x['href'])
+		#print(x['href'])
 		animepremium_page_soup = BeautifulSoup((requests.get(x['href'])).text,"lxml")
 		for y in animepremium_page_soup.find_all(rel="nofollow"):
 			if(y.text==quality):
 				episode_download.append(y['href'])
-print(episode_download)
+
+#print(episode_download)
+
+
+# Handle the links
+optype = int(input("\n\nSave the download links for later use (1) or download them now (2) ?\n"))
+
+if optype == 1:
+	episode_counter = start
+	with open(anime_name+".txt",'w') as f:
+		for x in episode_download:
+			f.write('{} Episode {}  {} \n\n'.format(anime_name, episode_counter, x))
+			episode_counter += 1
+
 
