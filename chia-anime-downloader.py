@@ -77,10 +77,8 @@ for episode_page in anime_episode_links[start-1:end]:
 optype = int(input("\n\nSave the download links for later use (1) or download them now (2) ?\n"))
 
 if optype == 1:
-	episode_counter = start
 	with open(anime_name+".txt",'w') as f:
 		for x in episode_download:
-			f.write('{} Episode {}  {} \n\n'.format(anime_name, episode_counter, x))
-			episode_counter += 1
+			f.write('{} \n\n'.format(x))
 
 
