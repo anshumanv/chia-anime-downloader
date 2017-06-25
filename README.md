@@ -21,7 +21,7 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 #### Dependencies :
 1. Requests
 2. BeautifulSoup4
+
+Run `pip install -r requirements.txt` for installing dependencies.
   
-  
-  
-PR's are well appreciated.
+* PR's are well appreciated.
