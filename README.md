@@ -17,6 +17,8 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 
 ### Issues/Problems :
 1. Not able to grab links from pages which don't have resolution selector or contains japanese characters [example](http://download.animepremium.tv/video/78802).
+2. Need to add a check for verifying whether chosen quality is available or not and handle the unavailability scenarios.
+
 
 #### Dependencies :
 1. Requests
