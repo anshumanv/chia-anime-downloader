@@ -6,7 +6,7 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 
 ### Features :
 1. Search animes using the website search tool.
-2. Generate downlaod links and save in text files for later use.
+2. Generate download links and save in text files for later use.
 3. Download using terminal (In Progress)
 
 
