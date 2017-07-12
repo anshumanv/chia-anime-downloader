@@ -27,3 +27,7 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 Run `pip install -r requirements.txt` for installing dependencies.
   
 * PR's are well appreciated.
+
+## License
+
+MIT © [Anshuman Verma](https://twitter.com/Anshumaniac12)
