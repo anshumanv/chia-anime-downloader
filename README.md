@@ -1,4 +1,4 @@
-# chia-anime-mass-downloader
+# chia-anime-downloader
 
 Anime batch downloader for [chia-anime](https://chia-anime.tv)
 
