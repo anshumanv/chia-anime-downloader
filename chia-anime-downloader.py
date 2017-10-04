@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-choice = int(raw_input("Enter (1) to search anime or (2) to download from link: ")) # Download by link or by name ?
+choice = int(input("Enter (1) to search anime or (2) to download from link: ")) # Download by link or by name ?
 
 # Download by search keyword or link
 
@@ -11,7 +11,7 @@ def download_by_keyword():
 	anime. Calls private functions to gather request data, parse and normalize it, and 
 	offer storage services. 
 	'''
-	anime_name = raw_input("Enter the name of anime you wish to download from chia-anime.tv: ")
+	anime_name = input("Enter the name of anime you wish to download from chia-anime.tv: ")
 	search_url = "http://www.chia-anime.tv/search/"+anime_name	#Visiting search page for relevant animes
 	searchpage = requests.get(search_url)	#fetch response object for search page
 	search_soup = BeautifulSoup((searchpage).text,"lxml")	#parse the response object as HTML
@@ -32,7 +32,7 @@ def download_by_keyword():
 		exit(0)
 		
 	#Select from search results
-	search_index = int(raw_input("Enter what you think is appropriate: "))
+	search_index = int(input("Enter what you think is appropriate: "))
 	anime_page_link = anime_page_links[search_index-1]
 	
 	anime_episode_links = _get_episode_links(anime_page_link)
@@ -51,7 +51,7 @@ def download_by_link():
 	url page. Calls private functions to gather request data, parse and normalize it, and 
 	offer storage services. 
 	'''
-	anime_page_link = raw_input("Paste the link of the anime page:")
+	anime_page_link = input("Paste the link of the anime page:")
 	
 	anime_name = anime_page_link.split('/')[-2]
 	
@@ -69,7 +69,7 @@ def _store_results(anime_name, episode_download):
 	'''
 	Private function that stores the gathered download links
 	'''
-	optype = int(raw_input('Save links for later use (1) or download them now (2):'))
+	optype = int(input('Save links for later use (1) or download them now (2):'))
 	if optype == 1:
 		with open(anime_name+".txt",'w') as f:
 			for x in episode_download:
@@ -107,8 +107,8 @@ def _get_episode_range(anime_episode_links):
 	Private function that gets the range of episodes
 	'''
 	while(True):
-		episode_start = int(raw_input('Entering starting episode:'))
-		episode_end = int(raw_input('Enter ending episode:'))
+		episode_start = int(input('Entering starting episode:'))
+		episode_end = int(input('Enter ending episode:'))
 		if(episode_start > 0 and episode_start < len(anime_episode_links) and episode_end >= 1 and episode_end <= len(anime_episode_links) and episode_start <= episode_end):
 			break
 		else:
@@ -120,7 +120,7 @@ def _get_episode_quality():
 	Private function that gets the episode quality based on user input
 	'''
 	while(True):
-		quality = raw_input('Enter the quality of the episode (360p, 480p, 720p, 1080p):')
+		quality = input('Enter the quality of the episode (360p, 480p, 720p, 1080p):')
 		if quality in ['360p', '480p', '720p', '1080p']:
 			break
 		else:
