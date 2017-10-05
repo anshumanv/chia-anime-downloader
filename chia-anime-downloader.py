@@ -101,13 +101,24 @@ def _get_animepremium_links(anime_episode_links, start, end, episode_quality):
     Private function that gets the animepremium download links
     '''
     episode_download = []
+    episode_num = start
     for episode_page in anime_episode_links[start - 1:end]:
         episode_page_soup = BeautifulSoup(requests.get(episode_page).text, "lxml")
         for x in episode_page_soup.find_all(id="download"):
             animepremium_page_soup = BeautifulSoup((requests.get(x['href'])).text, "lxml")
+            available_qualities = {}
             for y in animepremium_page_soup.find_all(rel="nofollow"):
-                if (y.text == episode_quality):
-                    episode_download.append(y['href'])
+                if y.text in ['360p', '480p', '720p', '1080p']:
+                    available_qualities.update({int(y.text[:-1]): y['href']})
+            _ep_quality = int(episode_quality[:-1])
+            for quality in reversed(sorted(available_qualities)): # Cause we want the next-highest quality
+                if _ep_quality >= quality:
+                    episode_download.append(available_qualities[quality])
+                    if _ep_quality > quality:
+                        print("WARNING: %dp quality not available for episode #%d. Using next-highest quality: %dp."
+                              % (_ep_quality, episode_num, quality))
+                    break
+        episode_num += 1
     return episode_download
 
 
