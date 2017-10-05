@@ -1,9 +1,11 @@
 import json
 import logging
+import re
 
 import requests
 import sys
 from bs4 import BeautifulSoup
+from bs4 import Comment
 from docopt import docopt
 
 l = logging.getLogger(__name__)
@@ -102,14 +104,29 @@ def _get_animepremium_links(anime_episode_links, start, end, episode_quality):
     '''
     episode_download = []
     episode_num = start
+    alt_server_link_pattern = re.compile("\$\(\"#downloader\"\).load\('(.*)'\)")
     for episode_page in anime_episode_links[start - 1:end]:
-        episode_page_soup = BeautifulSoup(requests.get(episode_page).text, "lxml")
+        episode_page_soup = BeautifulSoup(requests.get(episode_page,
+                                                                 headers={"User-Agent": 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36',
+                                                                          "Referer": "http://chia-anime.tv"}).text, "lxml")
         for x in episode_page_soup.find_all(id="download"):
-            animepremium_page_soup = BeautifulSoup((requests.get(x['href'])).text, "lxml")
+            animepremium_page_soup = BeautifulSoup(requests.get(x['href'],
+                                                                 headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
+                                                                          "Referer": episode_page}).text, "lxml")
             available_qualities = {}
             for y in animepremium_page_soup.find_all(rel="nofollow"):
                 if y.text in ['360p', '480p', '720p', '1080p']:
                     available_qualities.update({int(y.text[:-1]): y['href']})
+            for script in animepremium_page_soup.find_all("script"):
+                if "$(\"#downloader\")" in script.text:
+                    alternate_server_link = re.findall(alt_server_link_pattern, script.text)[0]
+            alternate_server_soup = BeautifulSoup(requests.get(alternate_server_link,
+                                                                 headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
+                                                                          "Referer": x['href']}).text, "lxml")
+            alternate_server_link_soup = BeautifulSoup(
+                ''.join(alternate_server_soup.find_all(string=lambda text:isinstance(text,Comment))), "lxml")
+            for i in alternate_server_link_soup.find_all(rel="nofollow"):
+                available_qualities.update({int(i.text[:-1]): i['href']})
             _ep_quality = int(episode_quality[:-1])
             for quality in reversed(sorted(available_qualities)): # Cause we want the next-highest quality
                 if _ep_quality >= quality:
