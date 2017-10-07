@@ -10,8 +10,13 @@ Anime batch downloader for [chia-anime](https://chia-anime.tv)
 3. Download using terminal (In Progress)
 
 
+### Installation
+1. `git clone https://github.com/anshumanv/chia-anime-downloader.git`
+2. `cd chia-anime-downloader`
+3. `python setup.py install`
+
 ### Usage :
-1.`python chia-anime-downloader.py` OR Simply run the .bat file.  
+1. `chia_anime_downloader` OR `python chia_anime_downloader.py` if you don't follow the installation guide OR Simply run the .bat file.  
 2. Follow the onscreen instructions
 
 

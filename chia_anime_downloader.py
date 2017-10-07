@@ -190,7 +190,7 @@ def main():
         download_by_link()
 
 
-if __name__ == '__main__':
+def command_line_runner():
     opts = docopt(HELP, argv=sys.argv[1:])
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
                         level=logging.DEBUG if opts["--verbose"] else logging.ERROR)
@@ -203,3 +203,7 @@ if __name__ == '__main__':
         download_by_link(link=opts["<link>"])
     else:
         main()
+
+
+if __name__ == '__main__':
+    command_line_runner()
