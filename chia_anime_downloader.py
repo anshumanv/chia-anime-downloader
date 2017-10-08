@@ -1,9 +1,11 @@
 import json
 import logging
 import re
-
+import time
 import requests
 import sys
+import os
+
 from bs4 import BeautifulSoup, Comment
 from docopt import docopt
 
@@ -108,7 +110,6 @@ def direct_download(anime_page_link, episode_range,
     if anime_page_link[-1] == "/":
         anime_page_link = anime_page_link[:-1]
     anime_name = anime_page_link.split('/')[-1]
-    print(anime_name)
     anime_episode_links = _get_episode_links(anime_page_link)
     if '-' in episode_range:
         try:
@@ -151,23 +152,48 @@ def _store_results(anime_name, episode_download,
     Private function that stores the gathered download links
     '''
     optype = -1
+    anime_name = anime_name.replace(' ', '_').capitalize()
+    if not os.path.exists(anime_name):
+        os.makedirs(anime_name)
     if not direct_store:
         optype = int(input(
             'Save links for later use (1) or download them now (2): '))
     if (direct_store and store_links) or optype == 1:
         with open(anime_name + ".txt", 'w') as f:
-            for x in episode_download:
+            for x in episode_download.values():
                 f.write('{} \n\n'.format(x))
     elif (direct_store and not store_links) or optype == 2:
-        # TODO: Code to download
-        print("Code not yet implemented.")
+        for ep_num in episode_download:
+            local_file = "{0}/Episode-{1}.mp4".format(
+                anime_name, ep_num)
+            with open(local_file, 'wb') as f:
+                download_req = requests.get(
+                    episode_download[ep_num], stream=True)
+                total_length = int(download_req.headers.get('content-length'))
+                downloaded = 0
+                start = time.clock()
+                if total_length is None:  # no content length header
+                    f.write(download_req.content)
+                else:
+                    for chunk in download_req.iter_content(1024):
+                        downloaded += len(chunk)
+                        f.write(chunk)
+                        done = int(50 * downloaded / total_length)
+                        done_percentage = round(downloaded/total_length*100, 2)
+                        speed = int((downloaded/(time.clock() - start))/1024)
+                        print(
+                            "\rDownloading episode {0}\t\t[{1}{2}] {3}%\t{4} kbps".format(  # noqa
+                                ep_num, '=' * done, ' ' * (50 - done),
+                                done_percentage, speed),
+                            end='')
+            print("")
 
 
 def _get_animepremium_links(anime_episode_links, start, end, episode_quality):
     '''
     Private function that gets the animepremium download links
     '''
-    episode_download = []
+    episode_download = {}
     episode_num = start
     alt_server_link_pattern = re.compile(
         "\$\(\"#downloader\"\).load\('(.*)'\)")
@@ -205,7 +231,8 @@ def _get_animepremium_links(anime_episode_links, start, end, episode_quality):
             # Cause we want the next-highest quality
             for quality in reversed(sorted(available_qualities)):
                 if _ep_quality >= quality:
-                    episode_download.append(available_qualities[quality])
+                    episode_download.update({episode_num:
+                                             available_qualities[quality]})
                     if _ep_quality > quality:
                         print(
                             ("WARNING: {0}p quality not available for episode #{1}. Using next-highest quality: {2}p.").format(  # noqa
