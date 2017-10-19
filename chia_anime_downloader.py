@@ -124,7 +124,7 @@ def direct_download(anime_page_link, episode_range,
         except:
             print("Invalid episode input.")
             exit(0)
-    if not (episode_start > 0 and episode_end < len(anime_episode_links)):
+    if not (episode_start > 0 and episode_end <= len(anime_episode_links)):
             print('Invalid episode range.')
             exit(0)
     if episode_quality not in ['360p', '480p', '720p', '1080p']:
@@ -263,7 +263,7 @@ def _get_episode_range(anime_episode_links):
     while (True):
         episode_start = int(input('Entering starting episode: '))
         episode_end = int(input('Enter ending episode: '))
-        if not (episode_start > 0 and episode_end < len(anime_episode_links)):
+        if not (episode_start > 0 and episode_end <= len(anime_episode_links)):
             print('Invalid episode selection, try again.')
         else:
             break
